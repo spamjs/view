@@ -5,7 +5,7 @@
 	"keywords": ["module", "file"],
 	"license": "MIT",
 	"require": {
-		"webmodules/bootstrap": ">=1.2.6",
+		"webmodules/bootloader": ">=0.0.0",
 		"jsutils/file": ">=0.0.0",
 		"webmodules/rivets": ">=0.7.1",
 		"pitana/pitana.js": ">=1.0.7"
