@@ -11,7 +11,7 @@
 	"dependencies": {
 		"webmodules-bootstrap": ">=1.2.6",
 		"webmodules-rivets": ">=0.7.1",
-		"webmodules-pitana.js": "latest",
+		"jqgeeks-pitana.js": "latest",
 		"jsutils-file": ">=0.0.0"
 	},
 	"keywords": ["polyfils"],
