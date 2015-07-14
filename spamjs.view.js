@@ -1,0 +1,207 @@
+_require_(
+	"webmodules/rivets",
+	"pitana/pitana.js",
+	"jsutils/file",
+	function(define,module){
+
+		define("spamjs.view").as(function(view){
+			
+			var fileUtil = module("jsutils.file");
+			var pitana = module("pitana");
+			var jQuery = module("jQuery");
+			
+			var TAG_NAME = "view";
+			
+			var TEMPLATES = {};
+			var PENDINGS = {};
+			var _id_ = 0;
+			var VIEWS = {};
+			
+			var addModule = function($container,vm){
+				if(this.__child__[vm.id]){
+					this.remove(vm.id);
+				}
+				this.__child__[vm.id] = vm;
+				$container = ($container.length>0) ? $container : this.$$; 
+				vm.addTo($container);
+			};
+			
+			var bindDomEvents = function(self,events){
+			      //We use {"eventName hash":"handler"} kind of notation !
+			    pitana.util.for(events, function(methodName, key) {
+			      key = key.trim().replace(/ +/g, " ");
+			      var arr = key.split(" ");
+			      var eventName = arr.shift();
+			      var hash = arr.join(" ");
+			      var callback = pitana.domEvents.addLiveEventListener(self.$$[0], eventName, hash, self[methodName], self);
+			      self.__eventsMap__[key] = {
+			        eventName: eventName,
+			        callback: callback
+			      };
+			    });
+			};
+			var unBindDomEvents = function(self){
+				for(var key in self.__eventsMap__){
+			      var v = self.__eventsMap__[key];
+			      if (v !== undefined && typeof v === "object") {
+			        self.$.removeEventListener(v.eventName, v.callback);
+			        delete self.__eventsMap__[key];
+			      }
+				}
+			};
+			
+			var _get_wrapper_ = function(_vid_,spam_class){
+				return jQuery('<'+TAG_NAME+' view-id='+_vid_+' class="'+spam_class+'" rendered />');
+			};
+			
+			return {
+				model : function(model){
+					if(model !== undefined){
+						this.__model__ = model;
+						this._apply_();
+					}
+					return this.__model__;
+				},
+				_apply_ : function(){
+					console.warn("apply",this.getClass().module)
+					if(this.__model__ && this.$$ && this.$$.html().trim()!==""){
+						if(this.$$view) this.$$view.unbind();
+						var self = this;
+						this.$$view = rivets.bind(this.$$[0], { model : this.__model__ }, {
+							handler: function(target, event, binding) {
+								if(binding.keypath && self[binding.keypath]){
+									self[binding.keypath](event, target,binding);
+								}
+							}
+						});
+					}
+				},
+				view : function(){
+					return this.load.apply(this,arguments);
+				},
+				load : function(_obj,data){
+					var self = this;
+					var dff = [],obj = {};
+					if(typeof _obj === "string"){
+						obj = {  src : _obj, data : data };
+					} else {
+						obj = _obj;
+					}
+					 
+					var render;
+					if(typeof obj.src === 'string'){
+						obj.tempPath = self.path(obj.src);
+						dff.push(fileUtil.getHTML(obj.tempPath).done(function(respHTML,respRender){
+							render = respRender;
+						}));
+					} else if(typeof obj.src === 'object' && typeof obj.src.done == "function"){
+						dff.push(obj.src.done(function(resp){
+							obj.html = resp;
+						}));
+					}
+					if(typeof obj.data === 'string'){
+						dff.push(fileUtil.getJSON(self.path(obj.data)).done(function(resp){
+							obj.data = resp;
+						}));
+					} else if(typeof obj.data === 'object' && typeof obj.data.done == "function"){
+						dff.push(obj.data.done(function(resp){
+							obj.data = resp;
+						}));
+					}
+					return jQuery.when.apply(jQuery,dff).done(function(){
+						if(obj.tempPath && render){
+							obj.html = render(obj.data);
+						}
+						if(typeof obj.selector === "string"){
+							self.$$.find(obj.selector)[obj.method || "html"](obj.html);
+						} else {
+							self.tempPath = obj.tempPath;
+							if(typeof self.src === 'string'){
+								self.render(obj.data);
+							} else {
+								self.$$.html(obj.html);
+							}
+						}
+					}).then(function(){
+						return jQuery.when(obj.data,obj.html);
+					});
+				},
+				_init_ : function(){
+				},
+				instance : function(){
+					var inst = view.parent().instance.apply(this,arguments);
+					inst._initOptions_.apply(inst,arguments);
+					return inst;
+				},
+				_initOptions_ : function(_options_){
+					var _options_ = _options_ || {};
+					this.id = _options_.id || (TAG_NAME+"_"+(++_id_));
+					this._view_id_ = window.getUUID();
+					this.options = _options_;
+					this.__child__ = {};
+					this.__eventsMap__ = {};
+					this.__model__ = _options_.model || null;
+				},
+				addTo : function($container){
+					var spam_class = this.__module__.replace('\.',"-","g");
+					this.$$ = _get_wrapper_.call(this,this._view_id_,spam_class);
+					bindDomEvents(this,this.events);
+					var $parent = $($container || "body");
+					this.selector = this.selector || "#"+this.id;
+					$container = $(this.selector,$parent).first();
+					if($container.length==1){
+						$container.append(this.$$);
+					} else {
+						$parent.append(this.$$);
+					}
+					this.$$.addClass(spam_class);
+					VIEWS[this._view_id_] = this;
+					this._init_();
+					return this;
+				},
+				add : function(){
+					var start = 0, count = arguments.length, selector;
+					if(typeof arguments[0] === "string"){
+						start = 1;
+						selector = arguments[0];
+					} 
+					for(var i=start; i<count; i++){
+						var vm = arguments[i];
+						vm.selector = vm.selector || selector || "#"+vm.id; 
+						var parent = this.$$.find( vm.selector).first();
+						console.warn(this,parent,vm);
+						addModule.call(this,parent,vm);
+					}
+					return arguments[start];
+				},
+				remove : function(id){
+					if(id!==undefined){
+						var cvm = this.__child__[id];
+						if(cvm && cvm.remove) cvm.remove();
+					} else {
+						if(this._remove_) {
+							this._remove_();
+						}
+						if(this.$$view) {
+							this.$$view.unbind();
+						}
+						for(var i in this.__child__){
+							this.__child__[i].remove();
+							delete this.__child__[i];
+						};
+						unBindDomEvents(this);
+						if(this.$$){
+							this.$$.remove();
+						}
+						delete VIEWS[this._view_id_];
+					}
+				},
+				_remove_ : function(){
+				},
+				_ready_ : function(){
+					console.log("----view is ready");
+				}
+			}
+		});	
+	}
+);

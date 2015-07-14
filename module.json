@@ -1,0 +1,7 @@
+{
+	"name": "spamjs/view",
+	"spamjs/view": {
+		"js": ["spamjs.view.js"],
+		"on": ["webmodules/rivets", "pitana/pitana.js", "jsutils/file"]
+	}
+}

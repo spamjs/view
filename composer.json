@@ -1,0 +1,13 @@
+{
+	"name": "spamjs/view",
+	"type": "library",
+	"description": "Javascript Single page application views",
+	"keywords": ["module", "file"],
+	"license": "MIT",
+	"require": {
+		"webmodules/bootstrap": ">=1.2.6",
+		"jsutils/file": ">=0.0.0",
+		"webmodules/rivets": ">=0.7.1",
+		"pitana/pitana.js": "latest"
+	}
+}

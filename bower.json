@@ -1,0 +1,20 @@
+{
+	"name": "spamjs-view",
+	"version": "0.0.1",
+	"main": "foo.js",
+	"description": "Javascript Single page application views",
+	"authors": ["lalit.tanwar07@gmail.com"],
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/spamjs/view.git"
+	},
+	"dependencies": {
+		"webmodules-bootstrap": ">=1.2.6",
+		"webmodules-rivets": ">=0.7.1",
+		"webmodules-pitana.js": "latest",
+		"jsutils-file": ">=0.0.0"
+	},
+	"keywords": ["polyfils"],
+	"license": "MIT",
+	"ignore": ["**/.*", "node_modules", "bower_components", "test", "tests"]
+}
