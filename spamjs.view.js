@@ -12,6 +12,10 @@ define("spamjs.view").as(function(view){
 	var VIEWS = {};
 	
 	var addModule = function($container,vm){
+		if(!is.Function(vm.addTo) || !is.Function(vm.view)){
+			console.error(vm,"is not view module")
+			throw new Error("View Add Exception");
+		}
 		if(this.__child__[vm.id]){
 			this.remove(vm.id);
 		}
