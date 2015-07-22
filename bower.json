@@ -1,6 +1,5 @@
 {
 	"name": "spamjs-view",
-	"version": "0.0.1",
 	"main": "foo.js",
 	"description": "Javascript Single page application views",
 	"authors": ["lalit.tanwar07@gmail.com"],
