@@ -140,7 +140,7 @@ define("spamjs.view").as(function(view){
 			this.__model__ = _options_.model || null;
 		},
 		addTo : function($container){
-			var spam_class = this.__module__.replace('\.',"-","g");
+			var spam_class = this.name.replace('\.',"-","g");
 			this.$$ = _get_wrapper_.call(this,this._view_id_,spam_class);
 			bindDomEvents(this,this.events);
 			var $parent = $($container || "body");
