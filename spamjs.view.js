@@ -132,6 +132,7 @@ define("spamjs.view").as(function(view){
 			return inst;
 		},
 		_initOptions_ : function(_options_){
+			this.__arguments__ = arguments;
 			var _options_ = _options_ || {};
 			this.id = _options_.id || (TAG_NAME+"_"+(++_id_));
 			this.__view_id__ = window.getUUID();
@@ -162,7 +163,7 @@ define("spamjs.view").as(function(view){
 					registerModule.call(parentView,$container,this);
 				}
 			}
-			this._init_();
+			this._init_.apply(this,this.__arguments__);
 			return this;
 		},
 		add : function(){
