@@ -11,7 +11,7 @@ define("spamjs.view").as(function(view){
 	var _id_ = 0;
 	var VIEWS = {};
 	
-	var addModule = function($container,vm){
+	var registerModule = function($container,vm){
 		if(!is.Function(vm.addTo) || !is.Function(vm.view)){
 			console.error(vm,"is not view module")
 			throw new Error("View Add Exception");
@@ -19,9 +19,10 @@ define("spamjs.view").as(function(view){
 		if(this.__child__[vm.id]){
 			this.remove(vm.id);
 		}
+		vm.__parent_id__ = this.__view_id__;
 		this.__child__[vm.id] = vm;
 		$container = ($container.length>0) ? $container : this.$$; 
-		vm.addTo($container);
+		return $container;
 	};
 	
 	var bindDomEvents = function(self,events){
@@ -133,7 +134,7 @@ define("spamjs.view").as(function(view){
 		_initOptions_ : function(_options_){
 			var _options_ = _options_ || {};
 			this.id = _options_.id || (TAG_NAME+"_"+(++_id_));
-			this._view_id_ = window.getUUID();
+			this.__view_id__ = window.getUUID();
 			this.options = _options_;
 			this.__child__ = {};
 			this.__eventsMap__ = {};
@@ -141,7 +142,7 @@ define("spamjs.view").as(function(view){
 		},
 		addTo : function($container){
 			var spam_class = this.name.replace('\.',"-","g");
-			this.$$ = _get_wrapper_.call(this,this._view_id_,spam_class);
+			this.$$ = _get_wrapper_.call(this,this.__view_id__,spam_class);
 			bindDomEvents(this,this.events);
 			var $parent = $($container || "body");
 			this.selector = this.selector || "#"+this.id;
@@ -152,7 +153,15 @@ define("spamjs.view").as(function(view){
 				$parent.append(this.$$);
 			}
 			this.$$.addClass(spam_class);
-			VIEWS[this._view_id_] = this;
+			VIEWS[this.__view_id__] = this;
+			if(!this.__parent_id__){
+				var $parentViewDom = $container.closest(TAG_NAME);
+				if($parentViewDom.length){
+					var parentId = $parentViewDom.attr("view-id");
+					var parentView = VIEWS[parentId];
+					registerModule.call(parentView,$container,this);
+				}
+			}
 			this._init_();
 			return this;
 		},
@@ -166,8 +175,8 @@ define("spamjs.view").as(function(view){
 				var vm = arguments[i];
 				vm.selector = vm.selector || selector || "#"+vm.id; 
 				var parent = this.$$.find( vm.selector).first();
-				console.warn(this,parent,vm);
-				addModule.call(this,parent,vm);
+				$container = registerModule.call(this,parent,vm);
+				vm.addTo($container);
 			}
 			return arguments[start];
 		},
@@ -190,7 +199,7 @@ define("spamjs.view").as(function(view){
 				if(this.$$){
 					this.$$.remove();
 				}
-				delete VIEWS[this._view_id_];
+				delete VIEWS[this.__view_id__];
 			}
 		},
 		_remove_ : function(){
