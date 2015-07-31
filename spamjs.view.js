@@ -11,9 +11,16 @@ define("spamjs.view").as(function(view){
 	var _id_ = 0;
 	var VIEWS = {};
 	
+	/**
+	 * Description
+	 * @method registerModule
+	 * @param {$DOM} $container
+	 * @param {SpamjsView} vm
+	 * @return $container
+	 */
 	var registerModule = function($container,vm){
 		if(!is.Function(vm.addTo) || !is.Function(vm.view)){
-			console.error(vm,"is not view module")
+			console.error(vm,"is not view module");
 			throw new Error("View Add Exception");
 		}
 		if(this.__child__[vm.id]){
@@ -25,6 +32,13 @@ define("spamjs.view").as(function(view){
 		return $container;
 	};
 	
+	/**
+	 * Description
+	 * @method bindDomEvents
+	 * @param {SpamjsView} self
+	 * @param {} events
+	 * @return 
+	 */
 	var bindDomEvents = function(self,events){
 	      //We use {"eventName hash":"handler"} kind of notation !
 	    pitana.util.for(events, function(methodName, key) {
@@ -39,6 +53,12 @@ define("spamjs.view").as(function(view){
 	      };
 	    });
 	};
+	/**
+	 * Description
+	 * @method unBindDomEvents
+	 * @param {} self
+	 * @return 
+	 */
 	var unBindDomEvents = function(self){
 		for(var key in self.__eventsMap__){
 	      var v = self.__eventsMap__[key];
@@ -54,6 +74,12 @@ define("spamjs.view").as(function(view){
 	};
 	
 	return {
+		/**
+		 * Description
+		 * @method model
+		 * @param {} model
+		 * @return MemberExpression
+		 */
 		model : function(model){
 			if(model !== undefined){
 				this.__model__ = model;
@@ -66,6 +92,14 @@ define("spamjs.view").as(function(view){
 				if(this.$$view) this.$$view.unbind();
 				var self = this;
 				this.$$view = rivets.bind(this.$$[0], { model : this.__model__ }, {
+					/**
+					 * Description
+					 * @method handler
+					 * @param {} target
+					 * @param {} event
+					 * @param {} binding
+					 * @return 
+					 */
 					handler: function(target, event, binding) {
 						if(binding.keypath && self[binding.keypath]){
 							self[binding.keypath](event, target,binding);
@@ -74,9 +108,21 @@ define("spamjs.view").as(function(view){
 				});
 			}
 		},
+		/**
+		 * Description
+		 * @method view
+		 * @return CallExpression
+		 */
 		view : function(){
 			return this.load.apply(this,arguments);
 		},
+		/**
+		 * Description
+		 * @method load
+		 * @param {} _obj
+		 * @param {} data
+		 * @return CallExpression
+		 */
 		load : function(_obj,data){
 			var self = this;
 			var dff = [],obj = {};
@@ -126,6 +172,11 @@ define("spamjs.view").as(function(view){
 		},
 		_init_ : function(){
 		},
+		/**
+		 * Description
+		 * @method instance
+		 * @return SpamjsView
+		 */
 		instance : function(){
 			var inst = view.parent().instance.apply(this,arguments);
 			inst._initOptions_.apply(inst,arguments);
@@ -141,6 +192,12 @@ define("spamjs.view").as(function(view){
 			this.__eventsMap__ = {};
 			this.__model__ = _options_.model || null;
 		},
+		/**
+		 * Description
+		 * @method addTo
+		 * @param {} $container
+		 * @return ThisExpression
+		 */
 		addTo : function($container){
 			var spam_class = this.name.replace('\.',"-","g");
 			this.$$ = _get_wrapper_.call(this,this.__view_id__,spam_class);
@@ -166,6 +223,11 @@ define("spamjs.view").as(function(view){
 			this._init_.apply(this,this.__arguments__);
 			return this;
 		},
+		/**
+		 * Description
+		 * @method add
+		 * @return MemberExpression
+		 */
 		add : function(){
 			var start = 0, count = arguments.length, selector;
 			if(typeof arguments[0] === "string"){
@@ -181,6 +243,12 @@ define("spamjs.view").as(function(view){
 			}
 			return arguments[start];
 		},
+		/**
+		 * Description
+		 * @method remove
+		 * @param {} id
+		 * @return 
+		 */
 		remove : function(id){
 			if(id!==undefined){
 				var cvm = this.__child__[id];
