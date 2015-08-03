@@ -63,7 +63,7 @@ define("spamjs.view").as(function(view){
 		for(var key in self.__eventsMap__){
 	      var v = self.__eventsMap__[key];
 	      if (v !== undefined && typeof v === "object") {
-	        self.$.removeEventListener(v.eventName, v.callback);
+	        self.$$[0].removeEventListener(v.eventName, v.callback);
 	        delete self.__eventsMap__[key];
 	      }
 		}
