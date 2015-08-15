@@ -277,14 +277,4 @@ define("spamjs.view").as(function(view){
 			console.log("----view is ready");
 		}
 	};
-});	
-
-(function(foo){
-	foo._setFoo_("view",function(moduleName,fromModule,def){
-		var deFromModule = foo.is.String(fromModule) ? fromModule : "spamjs.view";
-		var defDef = def || fromModule;
-		if(foo.is.Function(defDef) || foo.is.Object(defDef)){
-			return foo._define_(moduleName).extend(deFromModule).as(defDef);
-		} return foo._define_(moduleName).extend(deFromModule);
-	});
-})(this);
+});
