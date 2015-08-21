@@ -243,6 +243,12 @@ define("spamjs.view").as(function(view){
 			}
 			return arguments[start];
 		},
+    addModule : function(config){
+      var self = this;
+      return module(config.name, function(targetModule){
+          self.add(targetModule.instance(config));
+      });
+    },
 		/**
 		 * Description
 		 * @method remove
