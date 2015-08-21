@@ -187,7 +187,7 @@ define("spamjs.view").as(function(view){
 			var _options_ = _options_ || {};
 			this.id = _options_.id || (TAG_NAME+"_"+(++_id_));
 			this.__view_id__ = window.getUUID();
-			this.options = _options_;
+			this.options = (arguments[0] && arguments[0].options) ? arguments[0].options :  _options_;
 			this.__child__ = {};
 			this.__eventsMap__ = {};
 			this.__model__ = _options_.model || null;
