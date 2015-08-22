@@ -199,7 +199,7 @@ define("spamjs.view").as(function(view){
 		 * @return ThisExpression
 		 */
 		addTo : function($container){
-			var spam_class = this.name.replace('\.',"-","g");
+			var spam_class = "view-"+this.name.replace('\.',"-","g");
 			this.$$ = _get_wrapper_.call(this,this.__view_id__,spam_class);
 			bindDomEvents(this,this.events);
 			var $parent = $($container || "body");
@@ -246,7 +246,7 @@ define("spamjs.view").as(function(view){
     addModule : function(config){
       var self = this;
       return module(config.name, function(targetModule){
-          self.add(targetModule.instance(config));
+          self.add(targetModule.instance(config))
       });
     },
 		/**
