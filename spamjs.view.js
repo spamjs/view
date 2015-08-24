@@ -260,6 +260,7 @@ define("spamjs.view").as(function(view){
 				var cvm = this.__child__[id];
 				if(cvm && cvm.remove) cvm.remove();
 			} else {
+        var self = this;
 				if(this._remove_) {
 					this._remove_();
 				}
@@ -272,7 +273,10 @@ define("spamjs.view").as(function(view){
 				};
 				unBindDomEvents(this);
 				if(this.$$){
-					this.$$.remove();
+					this.$$.detach();
+          window.setTimeout(function(){
+            self.$$.remove();
+          },5000);
 				}
 				delete VIEWS[this.__view_id__];
 			}
