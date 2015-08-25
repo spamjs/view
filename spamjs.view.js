@@ -185,7 +185,7 @@ define("spamjs.view").as(function(view){
 		_initOptions_ : function(_options_){
 			this.__arguments__ = arguments;
 			var _options_ = _options_ || {};
-			this.id = _options_.id || (TAG_NAME+"_"+(this.__id__ || (++_id_)));
+			this.id = _options_.id || (TAG_NAME+"_"+(++_id_));
 			this.__view_id__ = window.getUUID();
 			this.options = (arguments[0] && arguments[0].options) ? arguments[0].options :  _options_;
 			this.__child__ = {};
@@ -199,6 +199,7 @@ define("spamjs.view").as(function(view){
 		 * @return ThisExpression
 		 */
 		addTo : function($container){
+      this.__deferred__ = jQuery.Deferred();
 			var spam_class = "view-"+this.name.replace('\.',"-","g");
 			this.$$ = _get_wrapper_.call(this,this.__view_id__,spam_class);
 			bindDomEvents(this,this.events);
@@ -220,7 +221,10 @@ define("spamjs.view").as(function(view){
 					registerModule.call(parentView,$container,this);
 				}
 			}
-			this._init_.apply(this,this.__arguments__);
+      var self = this;
+			jQuery.when(this._init_.apply(this,this.__arguments__)).done(function(){
+        self.__deferred__.resolveWith(self);
+      });
 			return this;
 		},
 		/**
@@ -243,11 +247,19 @@ define("spamjs.view").as(function(view){
 			}
 			return arguments[start];
 		},
-    addModule : function(config){
+    loadView : function(config){
       var self = this;
+      var dff = jQuery.Deferred();
       return module(config.name, function(targetModule){
-          self.add(targetModule.instance(config))
+          var targetModuleInstance = targetModule.instance(config)
+          self.add(targetModuleInstance).done(function(){
+            dff.resolveWith(targetModuleInstance);
+          })
       });
+      dff.promise();
+    },
+    done : function(cb){
+      return this.__deferred__.promise().done(cb);
     },
 		/**
 		 * Description
@@ -275,8 +287,8 @@ define("spamjs.view").as(function(view){
 				if(this.$$){
 					this.$$.detach();
           window.setTimeout(function(){
-            self.$$.remove();
-          },5000);
+
+          });
 				}
 				delete VIEWS[this.__view_id__];
 			}
