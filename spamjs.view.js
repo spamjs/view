@@ -10,6 +10,7 @@ define("spamjs.view").as(function(view){
 	var PENDINGS = {};
 	var _id_ = 0;
 	var VIEWS = {};
+  var __$trash__;
 	
 	/**
 	 * Description
@@ -276,19 +277,24 @@ define("spamjs.view").as(function(view){
 				if(this._remove_) {
 					this._remove_();
 				}
-				if(this.$$view) {
-					this.$$view.unbind();
-				}
 				for(var i in this.__child__){
 					this.__child__[i].remove();
 					delete this.__child__[i];
 				};
-				unBindDomEvents(this);
+        if(this.$$view) {
+          this.$$view.unbind();
+        }
+        unBindDomEvents(this);
 				if(this.$$){
-					this.$$.detach();
-          window.setTimeout(function(){
-
-          });
+          try {
+            this.$$.detach();
+            __$trash__.append(this.$$);
+            window.setTimeout(function(){
+                self.$$.remove();
+            },5000);
+          } catch (e){
+            console.warn("ViewDetachException:",e)
+          }
 				}
 				delete VIEWS[this.__view_id__];
 			}
@@ -296,6 +302,8 @@ define("spamjs.view").as(function(view){
 		_remove_ : function(){
 		},
 		_ready_ : function(){
+      __$trash__ = jQuery("<view-trash hidden style='display:none'>");
+      jQuery("body").append(__$trash__);
 			console.log("----view is ready");
 		}
 	};
