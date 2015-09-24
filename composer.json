@@ -8,6 +8,6 @@
 		"webmodules/bootloader": ">=0.1.0",
 		"jsutils/file": ">=0.0.4",
 		"webmodules/rivets": ">=0.8.2",
-		"pitana/pitana.js": ">=1.0.64"
+		"pitana/pitana.js": ">=1.0.66"
 	}
 }

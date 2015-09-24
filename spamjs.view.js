@@ -4,7 +4,7 @@ define("spamjs.view").as(function(view){
 	var pitana = module("pitana");
 	var jQuery = module("jQuery");
 	
-	var TAG_NAME = "view";
+	var TAG_NAME = "view", ANI_REMOVING = "view-ani-removing",ANI_ADDING = "view-ani-adding";
 	
 	var TEMPLATES = {};
 	var PENDINGS = {};
@@ -27,7 +27,7 @@ define("spamjs.view").as(function(view){
 		if(this.__child__[vm.id]){
 			this.remove(vm.id);
 		}
-		vm.__parent_id__ = this.__view_id__;
+		vm.__parent_id__ = this.__view_uuid__;
 		this.__child__[vm.id] = vm;
 		$container = ($container.length>0) ? $container : this.$$; 
 		return $container;
@@ -71,7 +71,7 @@ define("spamjs.view").as(function(view){
 	};
 	
 	var _get_wrapper_ = function(_vid_,spam_class){
-		return jQuery('<'+TAG_NAME+' view-id='+_vid_+' class="'+spam_class+'" rendered />');
+		return jQuery('<'+TAG_NAME+' view-uuid='+_vid_+' class="'+spam_class+'" rendered />');
 	};
 	
 	return {
@@ -186,8 +186,9 @@ define("spamjs.view").as(function(view){
 		_initOptions_ : function(_options_){
 			this.__arguments__ = arguments;
 			var _options_ = _options_ || {};
-			this.id = _options_.id || (TAG_NAME+"_"+(++_id_));
-			this.__view_id__ = window.getUUID();
+      this.id = _options_.id || (TAG_NAME+"_"+(++_id_));
+      this.__view_delay__ = _options_.delay;
+			this.__view_uuid__ = window.getUUID();
 			this.options = (arguments[0] && arguments[0].options) ? arguments[0].options :  _options_;
 			this.__child__ = {};
 			this.__eventsMap__ = {};
@@ -201,27 +202,32 @@ define("spamjs.view").as(function(view){
 		 */
 		addTo : function($container){
       this.__deferred__ = jQuery.Deferred();
-			var spam_class = "view-"+this.name.replace('\.',"-","g");
-			this.$$ = _get_wrapper_.call(this,this.__view_id__,spam_class);
+			var spam_class = "view-"+this.name.replace('\.',"-","g") + " " + "view-id-"+(this.id+"").replace('\.',"-","g");
+			this.$$ = _get_wrapper_.call(this,this.__view_uuid__,spam_class);
 			bindDomEvents(this,this.events);
 			var $parent = $($container || "body");
 			this.selector = this.selector || "#"+this.id;
 			$container = $(this.selector,$parent).first();
+      this.$$.addClass(ANI_ADDING);
 			if($container.length==1){
 				$container.append(this.$$);
 			} else {
 				$parent.append(this.$$);
 			}
 			this.$$.addClass(spam_class);
-			VIEWS[this.__view_id__] = this;
+			VIEWS[this.__view_uuid__] = this;
 			if(!this.__parent_id__){
 				var $parentViewDom = $container.closest(TAG_NAME);
 				if($parentViewDom.length){
-					var parentId = $parentViewDom.attr("view-id");
+					var parentId = $parentViewDom.attr("view-uuid");
 					var parentView = VIEWS[parentId];
 					registerModule.call(parentView,$container,this);
 				}
 			}
+      window.setTimeout(function(){
+        self.$$.removeClass(ANI_ADDING);
+      });
+
       var self = this;
 			jQuery.when(this._init_.apply(this,this.__arguments__)).done(function(){
         self.__deferred__.resolveWith(self);
@@ -241,7 +247,7 @@ define("spamjs.view").as(function(view){
 			} 
 			for(var i=start; i<count; i++){
 				var vm = arguments[i];
-				vm.selector = vm.selector || selector || "#"+vm.id; 
+				vm.selector = vm.selector || selector || "#"+vm.id;
 				var parent = this.$$.find( vm.selector).first();
 				$container = registerModule.call(this,parent,vm);
 				vm.addTo($container);
@@ -257,7 +263,7 @@ define("spamjs.view").as(function(view){
             dff.resolveWith(targetModuleInstance);
           })
       });
-      dff.promise();
+      return dff.promise();
     },
     done : function(cb){
       return this.__deferred__.promise().done(cb);
@@ -268,7 +274,9 @@ define("spamjs.view").as(function(view){
 		 * @param {} id
 		 * @return 
 		 */
-		remove : function(id){
+		remove : function(id,options){
+      var dff = jQuery.Deferred();
+      var _options = options || {};
 			if(id!==undefined){
 				var cvm = this.__child__[id];
 				if(cvm && cvm.remove) cvm.remove();
@@ -287,8 +295,21 @@ define("spamjs.view").as(function(view){
         unBindDomEvents(this);
 				if(this.$$){
           try {
-            this.$$.detach();
-            __$trash__.append(this.$$);
+            this.$$.addClass(ANI_REMOVING);
+            var onDetachView = function(){
+              try{
+                self.$$.detach();
+                dff.resolve(self);
+                __$trash__.append(this.$$);
+              } catch(e){
+                console.warn("ViewDetachException:",e)
+              }
+            };
+            if(self.__view_delay__){
+              window.setTimeout(onDetachView,self.__view_delay__);
+            } else {
+              onDetachView();
+            }
             window.setTimeout(function(){
                 self.$$.remove();
             },5000);
@@ -296,8 +317,9 @@ define("spamjs.view").as(function(view){
             console.warn("ViewDetachException:",e)
           }
 				}
-				delete VIEWS[this.__view_id__];
+				delete VIEWS[this.__view_uuid__];
 			}
+      return dff.promise();
 		},
 		_remove_ : function(){
 		},
