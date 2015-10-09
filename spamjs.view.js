@@ -201,6 +201,7 @@ define("spamjs.view").as(function(view){
 		 * @return ThisExpression
 		 */
 		addTo : function($container){
+      var self = this;
       this.__deferred__ = jQuery.Deferred();
 			var spam_class = "view-"+this.name.replace('\.',"-","g") + " " + "view-id-"+(this.id+"").replace('\.',"-","g");
 			this.$$ = _get_wrapper_.call(this,this.__view_uuid__,spam_class);
@@ -226,9 +227,8 @@ define("spamjs.view").as(function(view){
 			}
       window.setTimeout(function(){
         self.$$.removeClass(ANI_ADDING);
-      });
+      },self.__view_delay__);
 
-      var self = this;
 			jQuery.when(this._init_.apply(this,this.__arguments__)).done(function(){
         self.__deferred__.resolveWith(self);
       });
