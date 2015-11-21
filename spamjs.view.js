@@ -203,7 +203,7 @@ define("spamjs.view").as(function(view){
 		addTo : function($container){
       var self = this;
       this.__deferred__ = jQuery.Deferred();
-			var spam_class = "view-"+this.name.replace('\.',"-","g") + " " + "view-id-"+(this.id+"").replace('\.',"-","g");
+      var spam_class = "view-"+this.name.replace(/\./g,"-") + " " + "view-id-"+(this.id+"").replace(/\./g,"-");
 			this.$$ = _get_wrapper_.call(this,this.__view_uuid__,spam_class);
 			bindDomEvents(this,this.events);
 			var $parent = $($container || "body");
