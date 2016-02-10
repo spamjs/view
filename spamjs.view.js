@@ -70,7 +70,11 @@ define("spamjs.view").as(function(view){
 		}
 	};
 	
-	var _get_wrapper_ = function(_vid_,spam_class){
+	var _get_wrapper_ = function(_vid_,spam_class,$$$view){
+    if($$$view){
+      $$$view.addClass(spam_class).attr("rendered","rendered").attr("view-uuid", _vid_);
+      return $$$view;
+    }
 		return jQuery('<'+TAG_NAME+' view-uuid='+_vid_+' class="'+spam_class+'" rendered />');
 	};
 	
@@ -200,25 +204,28 @@ define("spamjs.view").as(function(view){
 		 * @param {} $container
 		 * @return ThisExpression
 		 */
-		addTo : function($container){
+		addTo : function($container,$$$){
       var self = this;
+      this.$$$ = $$$;
       this.__deferred__ = jQuery.Deferred();
       var spam_class = "view-"+this.name.replace(/\./g,"-") + " " + "view-id-"+(this.id+"").replace(/\./g,"-");
-			this.$$ = _get_wrapper_.call(this,this.__view_uuid__,spam_class);
+			this.$$ = _get_wrapper_.call(this,this.__view_uuid__,spam_class,$$$);
 			bindDomEvents(this,this.events);
 			var $parent = $($container || "body");
 			this.selector = this.selector || "#"+this.id;
 			$container = $(this.selector,$parent).first();
       this.$$.addClass(ANI_ADDING);
-			if($container.length==1){
-				$container.append(this.$$);
-			} else {
-				$parent.append(this.$$);
-			}
+      if(!this.$$$){
+        if($container.length==1){
+          $container.append(this.$$);
+        } else {
+          $parent.append(this.$$);
+        }
+      }
 			this.$$.addClass(spam_class);
 			VIEWS[this.__view_uuid__] = this;
 			if(!this.__parent_id__){
-				var $parentViewDom = $container.closest(TAG_NAME);
+				var $parentViewDom = $container.closest(TAG_NAME+", spamjs-view");
 				if($parentViewDom.length){
 					var parentId = $parentViewDom.attr("view-uuid");
 					var parentView = VIEWS[parentId];
@@ -321,6 +328,9 @@ define("spamjs.view").as(function(view){
 			}
       return dff.promise();
 		},
+    trigger : function(eventName,detail){
+      return  pitana.domEvents.trigger(this.$$[0], eventName, detail);
+    },
 		_remove_ : function(){
 		},
 		_ready_ : function(){
@@ -328,5 +338,44 @@ define("spamjs.view").as(function(view){
       jQuery("body").append(__$trash__);
 			console.log("----view is ready");
 		}
+
 	};
+});
+
+
+_tag_('spamjs.view.inline', function (date) {
+
+  return {
+    tagName: "spamjs-view",
+    events: {
+    },
+    accessors: {
+      module: {
+        type: "string",
+        default: ""
+      },
+      rendered: {
+        type: "boolean",
+        default: true
+      }
+    },
+    attachedCallback: function () {
+      console.error(this.$.module);
+      var self = this;
+      this.$.rendered = !!this.$.rendered;
+      if (this.$.module && !this.$.rendered){
+        _module_(this.$.module, function(MODULE){
+          var $this = jQuery(self.$);
+          MODULE.instance({}).addTo($this.parent(),$this);
+        });
+      }
+    },
+    onchange: function (e, target) {
+      if (target === this.$ || target === e.originalTarget || (e.firedBy && e.firedBy.el === target)) {
+        return;
+      }
+      return window.preventPropagation(e);
+    }
+  };
+
 });

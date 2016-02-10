@@ -1,19 +1,20 @@
 {
-	"name": "spamjs-view",
-	"main": "foo.js",
-	"description": "Javascript Single page application views",
-	"authors": ["lalit.tanwar07@gmail.com"],
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/spamjs/view.git"
-	},
-	"dependencies": {
-		"webmodules-bootloader": ">=0.1.0",
-		"webmodules-rivets": ">=0.8.2",
-		"jqgeeks-pitana.js": ">=1.0.66",
-		"jsutils-file": ">=0.0.4"
-	},
-	"keywords": ["polyfils"],
-	"license": "MIT",
-	"ignore": ["**/.*", "node_modules", "bower_components", "test", "tests"]
+  "name": "spamjs-view",
+  "main": "foo.js",
+  "description": "Javascript Single page application views",
+  "authors": ["lalit.tanwar07@gmail.com"],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/spamjs/view.git"
+  },
+  "dependencies": {
+    "webmodules-bootloader": ">=0.1.0",
+    "webmodules-rivets": ">=0.8.2",
+    "jqgeeks-pitana.js": ">=1.0.66",
+    "webmodules-jqtag": ">=0.0.7",
+    "jsutils-file": ">=0.0.4"
+  },
+  "keywords": ["polyfils"],
+  "license": "MIT",
+  "ignore": ["**/.*", "node_modules", "bower_components", "test", "tests"]
 }
