@@ -360,7 +360,6 @@ _tag_('spamjs.view.inline', function (date) {
       }
     },
     attachedCallback: function () {
-      console.error(this.$.module);
       var self = this;
       this.$.rendered = !!this.$.rendered;
       if (this.$.module && !this.$.rendered){
@@ -374,12 +373,6 @@ _tag_('spamjs.view.inline', function (date) {
           }).addTo($this.parent(),$this);
         });
       }
-    },
-    onchange: function (e, target) {
-      if (target === this.$ || target === e.originalTarget || (e.firedBy && e.firedBy.el === target)) {
-        return;
-      }
-      return window.preventPropagation(e);
     }
   };
 
