@@ -366,7 +366,12 @@ _tag_('spamjs.view.inline', function (date) {
       if (this.$.module && !this.$.rendered){
         _module_(this.$.module, function(MODULE){
           var $this = jQuery(self.$);
-          MODULE.instance({}).addTo($this.parent(),$this);
+          MODULE.instance({
+            id : $this.attr("id"),
+            options : {
+              data : $this.data()
+            }
+          }).addTo($this.parent(),$this);
         });
       }
     },
