@@ -92,6 +92,12 @@ define("spamjs.view").as(function(view){
 			}
 			return this.__model__;
 		},
+		/**
+	         * It will destroy currect object and rebuild whole binding thing again;
+	         */
+	        remodel : function(){
+	            return this.model(JSON.parse(JSON.stringy(this.model())));
+	        },
 		_apply_ : function(){
 			if(this.__model__ && this.$$ && this.$$.html().trim()!==""){
 				if(this.$$view) this.$$view.unbind();
