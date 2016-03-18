@@ -371,7 +371,7 @@ _tag_('spamjs.view.inline', function (date) {
       if (this.$.module && !this.$.rendered){
         _module_(this.$.module, function(MODULE){
           var $this = jQuery(self.$);
-          MODULE.instance({
+          self.modeInstance = MODULE.instance({
             id : $this.attr("id"),
             options : {
               data : $this.data()
@@ -379,6 +379,11 @@ _tag_('spamjs.view.inline', function (date) {
           }).addTo($this.parent(),$this);
         });
       }
+    },
+    detachedCallback :  function(){
+      var self = this;
+      self.modeInstance.remove();
+      delete self.modeInstance;
     }
   };
 
