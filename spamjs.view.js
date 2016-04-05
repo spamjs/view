@@ -373,6 +373,7 @@ _tag_('spamjs.view.inline', function (date) {
           var $this = jQuery(self.$);
           self.modeInstance = MODULE.instance({
             id : $this.attr("id"),
+            delay : $this.attr("delay"),
             options : {
               data : $this.data()
             }
