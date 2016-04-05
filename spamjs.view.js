@@ -374,9 +374,7 @@ _tag_('spamjs.view.inline', function (date) {
           self.modeInstance = MODULE.instance({
             id : $this.attr("id"),
             delay : $this.attr("delay"),
-            options : {
-              data : $this.data()
-            }
+            options : $this.data()
           }).addTo($this.parent(),$this);
         });
       }
