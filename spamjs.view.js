@@ -242,9 +242,13 @@ define("spamjs.view").as(function(view){
         self.$$.removeClass(ANI_ADDING);
       },self.__view_delay__);
 
-			jQuery.when(this._init_.apply(this,this.__arguments__)).done(function(){
-        self.__deferred__.resolveWith(self);
-      });
+      window.until(function(){
+        jQuery.when(self._init_.apply(self,self.__arguments__)).done(function(){
+          self.__deferred__.resolveWith(self);
+        });
+      }, function(){
+        return self.__dir__ !== null;
+      })
 			return this;
 		},
 		/**
@@ -342,7 +346,7 @@ define("spamjs.view").as(function(view){
 		_ready_ : function(){
       __$trash__ = jQuery("<view-trash hidden style='display:none'>");
       jQuery("body").append(__$trash__);
-			console.log("----view is ready");
+			console.info("----view is ready");
 		}
 
 	};
