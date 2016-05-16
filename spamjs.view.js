@@ -226,6 +226,7 @@ define("spamjs.view").as(function (view) {
           $container.append(this.$$);
         } else {
           $parent.append(this.$$);
+          $container = $parent;
         }
       }
       this.$$.addClass(spam_class);
