@@ -391,7 +391,9 @@ _tag_('spamjs.view.inline', function (date) {
     },
     detachedCallback: function () {
       var self = this;
-      self.modeInstance.remove();
+      if(self.modeInstance){
+          self.modeInstance.remove();
+      }
       delete self.modeInstance;
     }
   };
