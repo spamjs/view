@@ -252,7 +252,7 @@ define("spamjs.view").as(function(view) {
 
             window.until(function() {
                 jQuery.when(self._init_.apply(self, self.__arguments__)).done(function(resp) {
-                    self.__deferred__.resolveWith(self,[resp]);
+                    self.__deferred__.resolveWith(self,arguments);
                 });
             }, function() {
                 return self.__dir__ !== null;
@@ -285,7 +285,7 @@ define("spamjs.view").as(function(view) {
             return module(config.name, function(targetModule) {
                 var targetModuleInstance = targetModule.instance(config)
                 self.add(targetModuleInstance).done(function() {
-                    dff.resolveWith(targetModuleInstance);
+                    dff.resolveWith(targetModuleInstance,arguments);
                 })
             });
             return dff.promise();
