@@ -12,6 +12,7 @@ define("spamjs.view").as(function(view) {
     var VIEWS = {};
     var __$trash__;
 
+
     /**
      * Description
      * @method registerModule
@@ -109,7 +110,19 @@ define("spamjs.view").as(function(view) {
             if (this.__model__ && this.$$ && this.$$.html().trim() !== "") {
                 if (this.$$view) this.$$view.unbind();
                 var self = this;
-                this.$$view = rivets.bind(this.$$[0], { model: this.__model__ }, {
+                var newModel = { model: this.__model__ };
+
+                for(var key in self.compute){
+                    if(is.Function(self[self.compute[key]])){
+                        (function(funName){
+                            newModel[funName] =  function(){
+                                return self[funName].apply(self,arguments);
+                            }
+                        })(self.compute[key]);
+                    }
+                }
+
+                this.$$view = rivets.bind(this.$$[0],newModel, {
                     /**
                      * Description
                      * @method handler
