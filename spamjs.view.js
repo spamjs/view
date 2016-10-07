@@ -401,11 +401,15 @@ _tag_('spamjs.view.inline', function(date) {
             if (this.$.module && !this.$.rendered) {
                 _module_(this.$.module, function(MODULE) {
                     var $this = jQuery(self.$);
-                    self.modeInstance = MODULE.instance({
-                        id: $this.attr("id"),
-                        delay: $this.attr("delay"),
-                        options: $this.data()
-                    }).addTo($this.parent(), $this);
+                    if(MODULE){
+                        self.modeInstance = MODULE.instance({
+                            id: $this.attr("id"),
+                            delay: $this.attr("delay"),
+                            options: $this.data()
+                        }).addTo($this.parent(), $this);
+                    } else {
+                        console.error("MODULE NOT FOUND",self.$.module);
+                    }
                 });
             }
         },
