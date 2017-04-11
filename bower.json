@@ -13,7 +13,7 @@
     "webmodules-rivets": ">=0.8.2",
     "jqgeeks-pitana.js": ">=1.0.66",
     "webmodules-jqtag": ">=0.0.7",
-    "jsutils-file": ">=0.0.4"
+    "jsutils-file": ">=0.1.8"
   },
   "keywords": ["polyfils"],
   "license": "MIT",
