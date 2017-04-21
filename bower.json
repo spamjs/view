@@ -8,12 +8,12 @@
     "url": "git://github.com/spamjs/view.git"
   },
   "dependencies": {
-    "webmodules-foo": ">=3.1.12",
+    "webmodules-foo": ">=3.2.6",
     "webmodules-bootloader": ">=0.1.0",
     "webmodules-rivets": ">=0.8.2",
     "jqgeeks-pitana.js": ">=1.0.66",
     "webmodules-jqtag": ">=0.0.7",
-    "jsutils-file": ">=0.1.8"
+    "jsutils-file": ">=0.1.9"
   },
   "keywords": ["polyfils"],
   "license": "MIT",
