@@ -339,7 +339,7 @@ define("spamjs.view").as(function(view) {
                             try {
                                 self.$$.detach();
                                 dff.resolve(self);
-                                __$trash__.append(this.$$);
+                                __$trash__.append(self.$$);
                             } catch (e) {
                                 console.warn("ViewDetachException:", e)
                             }
