@@ -11,7 +11,7 @@
     "webmodules-foo": ">=3.2.6",
     "webmodules-bootloader": ">=0.1.20",
     "webmodules-rivets": ">=0.8.2",
-    "jqgeeks-pitana.js": ">=1.0.7",
+    "pitana.js": "~1.0.9",
     "webmodules-jqtag": ">=0.0.7",
     "jsutils-file": ">=0.1.9"
   },
